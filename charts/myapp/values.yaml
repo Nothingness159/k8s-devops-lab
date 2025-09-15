@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: my-fastapi-image
+  repository: my-flask-image
   tag: latest
   pullPolicy: Never
 
