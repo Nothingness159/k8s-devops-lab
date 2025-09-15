@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vmagent.fullname" . }}
+  labels:
+    app: {{ include "vmagent.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "vmagent.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "vmagent.name" . }}
+    spec:
+      containers:
+        - name: vmagent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--remoteWrite.url={{ .Values.remoteWriteURL }}"
+            - "--promscrape.config=/etc/vmagent/prometheus.yml"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/vmagent
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "vmagent.fullname" . }}-config

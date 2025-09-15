@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: victoriametrics/vmagent
+  tag: v1.84.0
+  pullPolicy: IfNotPresent
+
+remoteWriteURL: http://vmsingle-vm-single:8428/api/v1/write
+
+scrapeConfigs:
+  - job_name: node-exporter
+    targets:
+      - 192.168.49.2:9100
+  - job_name: kube-state-metrics
+    targets:
+      - ksm-kube-state-metrics.monitoring.svc.cluster.local:8080
