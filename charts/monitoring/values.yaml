@@ -1,5 +1,3 @@
-replicaCount: 1
-
 image:
   repository: victoriametrics/vmagent
   tag: v1.84.0
@@ -14,3 +12,27 @@ scrapeConfigs:
   - job_name: kube-state-metrics
     targets:
       - ksm-kube-state-metrics.monitoring.svc.cluster.local:8080
+
+service:
+  port: 8429
+  type: ClusterIP
+replicaCount: 1
+
+serviceAccount:
+  create: true
+  name: vmagent
+  automount: true
+  annotations: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+
+ingress:
+  enabled: false
+  hosts:
+    - host: vmagent.local
+      paths:
+        - /
