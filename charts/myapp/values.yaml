@@ -1,0 +1,48 @@
+replicaCount: 1
+
+image:
+  repository: my-fastapi-image
+  tag: latest
+  pullPolicy: Never
+
+service:
+  type: NodePort
+  port: 5001
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: app.local
+      paths:
+        - path: /api
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+probes:
+  readiness:
+    path: /health
+    port: 5001
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    path: /health
+    port: 5001
+    initialDelaySeconds: 15
+    periodSeconds: 20
+serviceAccount:
+  create: true
+  name: ""
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 50
